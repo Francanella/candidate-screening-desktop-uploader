@@ -28,6 +28,21 @@ assume the former.
 **The version comes from the executable**, which takes it from `<Version>` in `ScreeningLoader.Shell.csproj`.
 Bump it there, not here.
 
+## Releasing
+
+Pushing a tag `v<Version>` on `main` runs the [Release workflow](../.github/workflows/release.yml), which
+builds the installer on a Windows runner and attaches it to a GitHub release with notes generated from the
+merged pull requests. The tag has to match `<Version>` in `ScreeningLoader.Shell.csproj`, or the workflow
+stops before building anything. A tag with a suffix, such as `v0.9.1-rc1`, publishes a pre-release.
+
+```bash
+git tag v0.9.1 origin/main
+git push origin v0.9.1
+```
+
+Push the tag only: creating the release by hand from the GitHub page makes the workflow fail when it tries to
+create it again.
+
 ## What it does
 
 - Installs **per user**, in `%LOCALAPPDATA%\Programs\CandidateScreeningLoader`. No administrator rights and no
