@@ -30,18 +30,22 @@ Bump it there, not here.
 
 ## Releasing
 
-Pushing a tag `v<Version>` on `main` runs the [Release workflow](../.github/workflows/release.yml), which
-builds the installer on a Windows runner and attaches it to a GitHub release with notes generated from the
-merged pull requests. The tag has to match `<Version>` in `ScreeningLoader.Shell.csproj`, or the workflow
-stops before building anything. A tag with a suffix, such as `v0.9.1-rc1`, publishes a pre-release.
+Publishing a GitHub release runs the [Release workflow](../.github/workflows/release.yml), which builds the
+installer on a Windows runner and attaches it to that release a couple of minutes later. Its tag has to be
+`v<Version>`, matching `<Version>` in `ScreeningLoader.Shell.csproj`; otherwise the workflow fails before
+building and the release is left without an installer, so delete it, fix the tag and publish again.
+
+From the browser: **Releases → Draft a new release**, choose a tag, type `v0.9.1` and pick **Create new tag on
+publish**, target `main`, **Generate release notes**, and **Publish release**. Tick **Set as a pre-release** for
+a build that is not meant for users yet.
+
+From a terminal, the same thing:
 
 ```bash
-git tag v0.9.1 origin/main
-git push origin v0.9.1
+gh release create v0.9.1 --target main --generate-notes
 ```
 
-Push the tag only: creating the release by hand from the GitHub page makes the workflow fail when it tries to
-create it again.
+Pushing a tag alone does nothing: the workflow runs on the release, not on the tag.
 
 ## What it does
 

@@ -1,9 +1,8 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*"
+  release:
+    types: [published]
 
 permissions:
   contents: write
@@ -20,8 +19,8 @@ jobs:
 
       - name: Check the tag matches the app version
         run: |
-          $tag = "${{ github.ref_name }}"
-          $version = (Select-Xml -Path src/ScreeningLoader.Shell/ScreeningLoader.Shell.csproj -XPath '//Version').Node.InnerText
+          $tag = "${{ github.event.release.tag_name }}"
+          $version =(Select-Xml -Path src/ScreeningLoader.Shell/ScreeningLoader.Shell.csproj -XPath '//Version').Node.InnerText
           $tagVersion = $tag.TrimStart('v').Split('-')[0]
           if ($tagVersion -ne $version) {
             Write-Error "Tag $tag does not match <Version>$version</Version> in ScreeningLoader.Shell.csproj."
@@ -55,11 +54,7 @@ jobs:
           choco install innosetup --no-progress -y
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer\CandidateScreeningLoader.iss
 
-      - name: Create the release
+      - name: Attach the installer to the release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          $tag = "${{ github.ref_name }}"
-          $flags = @('--generate-notes', '--title', "Candidate Screening Loader $($tag.TrimStart('v'))")
-          if ($tag.Contains('-')) { $flags += '--prerelease' }
-          gh release create $tag installer\Output\CandidateScreeningLoaderSetup.exe @flags
+        run: gh release upload "${{ github.event.release.tag_name }}" installer\Output\CandidateScreeningLoaderSetup.exe --clobber
