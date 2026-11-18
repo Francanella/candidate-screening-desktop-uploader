@@ -1,6 +1,6 @@
 # Installer
 
-`CandidateScreeningLoaderSetup.exe`, built with [Inno Setup 6](https://jrsoftware.org/isinfo.php).
+`CandidateScreeningLoaderSetup-<version>.exe`, built with [Inno Setup 6](https://jrsoftware.org/isinfo.php).
 
 ## Building it
 
